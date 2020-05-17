@@ -143,7 +143,7 @@ inline void gem_combine (gemYB *p_gem1, gemYB *p_gem2, gemYB *p_gem_combined)
 }
 
 template<class gemYB>
-inline void gem_init(gemYB* p_gem, int grd, double damage, double crit, double bbound)
+inline void gem_init(gemYB* p_gem, int grd, float damage, float crit, float bbound)
 {
 	p_gem->grade =grd;
 	p_gem->damage=damage;
