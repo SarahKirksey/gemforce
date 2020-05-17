@@ -82,40 +82,36 @@ inline void set_place(const gem_YB&, int) {}
 // Combining section
 // -----------------
 
+inline float stat_combine(float maj_cof, float min_cof, float a, float b)
+{
+	return a > b ? a*maj_cof + b*min_cof : a*min_cof + b*maj_cof;
+}
+
 template<class gemYB>
 inline void gem_comb_eq(const gemYB* p_gem1, const gemYB* p_gem2, gemYB* p_gem_combined)
 {
 	p_gem_combined->grade = p_gem1->grade+1;
-	if (p_gem1->damage > p_gem2->damage) p_gem_combined->damage = DAMAGE_EQ_1*p_gem1->damage + DAMAGE_EQ_2*p_gem2->damage;
-	else p_gem_combined->damage = DAMAGE_EQ_1*p_gem2->damage + DAMAGE_EQ_2*p_gem1->damage;
-	if (p_gem1->crit > p_gem2->crit) p_gem_combined->crit = CRIT_EQ_1*p_gem1->crit + CRIT_EQ_2*p_gem2->crit;
-	else p_gem_combined->crit = CRIT_EQ_1*p_gem2->crit + CRIT_EQ_2*p_gem1->crit;
-	if (p_gem1->bbound > p_gem2->bbound) p_gem_combined->bbound = BBOUND_EQ_1*p_gem1->bbound + BBOUND_EQ_2*p_gem2->bbound;
-	else p_gem_combined->bbound = BBOUND_EQ_1*p_gem2->bbound + BBOUND_EQ_2*p_gem1->bbound;
+	p_gem_combined->damage	= stat_combine(DAMAGE_EQ_1, DAMAGE_EQ_2, p_gem1->damage, p_gem2->damage);
+	p_gem_combined->crit	= stat_combine(CRIT_EQ_1, CRIT_EQ_2, p_gem1->crit, p_gem2->crit);
+	p_gem_combined->bbound	= stat_combine(BBOUND_EQ_1, BBOUND_EQ_2, p_gem1->bbound, p_gem2->bbound);
 }
 
 template<class gemYB>
 inline void gem_comb_d1(const gemYB *p_gem1, const gemYB *p_gem2, gemYB *p_gem_combined)     //bigger is always gem1
 {
 	p_gem_combined->grade = p_gem1->grade;
-	if (p_gem1->damage > p_gem2->damage) p_gem_combined->damage = DAMAGE_D1_1*p_gem1->damage + DAMAGE_D1_2*p_gem2->damage;
-	else p_gem_combined->damage = DAMAGE_D1_1*p_gem2->damage + DAMAGE_D1_2*p_gem1->damage;
-	if (p_gem1->crit > p_gem2->crit) p_gem_combined->crit = CRIT_D1_1*p_gem1->crit + CRIT_D1_2*p_gem2->crit;
-	else p_gem_combined->crit = CRIT_D1_1*p_gem2->crit + CRIT_D1_2*p_gem1->crit;
-	if (p_gem1->bbound > p_gem2->bbound) p_gem_combined->bbound = BBOUND_D1_1*p_gem1->bbound + BBOUND_D1_2*p_gem2->bbound;
-	else p_gem_combined->bbound = BBOUND_D1_1*p_gem2->bbound + BBOUND_D1_2*p_gem1->bbound;
+	p_gem_combined->damage	= stat_combine(DAMAGE_D1_1, DAMAGE_D1_2, p_gem1->damage, p_gem2->damage);
+	p_gem_combined->crit	= stat_combine(CRIT_D1_1, CRIT_D1_2, p_gem1->crit, p_gem2->crit);
+	p_gem_combined->bbound	= stat_combine(BBOUND_D1_1, BBOUND_D1_2, p_gem1->bbound, p_gem2->bbound);
 }
 
 template<class gemYB>
 inline void gem_comb_gn(const gemYB *p_gem1, const gemYB *p_gem2, gemYB *p_gem_combined)
 {
 	p_gem_combined->grade = std::max(p_gem1->grade, p_gem2->grade);
-	if (p_gem1->damage > p_gem2->damage) p_gem_combined->damage = DAMAGE_GN_1*p_gem1->damage + DAMAGE_GN_2*p_gem2->damage;
-	else p_gem_combined->damage = DAMAGE_GN_1*p_gem2->damage + DAMAGE_GN_2*p_gem1->damage;
-	if (p_gem1->crit > p_gem2->crit) p_gem_combined->crit = CRIT_GN_1*p_gem1->crit + CRIT_GN_2*p_gem2->crit;
-	else p_gem_combined->crit = CRIT_GN_1*p_gem2->crit + CRIT_GN_2*p_gem1->crit;
-	if (p_gem1->bbound > p_gem2->bbound) p_gem_combined->bbound = BBOUND_GN_1*p_gem1->bbound + BBOUND_GN_2*p_gem2->bbound;
-	else p_gem_combined->bbound = BBOUND_GN_1*p_gem2->bbound + BBOUND_GN_2*p_gem1->bbound;
+	p_gem_combined->damage	= stat_combine(DAMAGE_GN_1, DAMAGE_GN_2, p_gem1->damage, p_gem2->damage);
+	p_gem_combined->crit	= stat_combine(CRIT_GN_1, CRIT_GN_2, p_gem1->crit, p_gem2->crit);
+	p_gem_combined->bbound	= stat_combine(BBOUND_GN_1, BBOUND_GN_2, p_gem1->bbound, p_gem2->bbound);
 }
 
 template<class gemYB>
@@ -138,8 +134,8 @@ inline void gem_combine (gemYB *p_gem1, gemYB *p_gem2, gemYB *p_gem_combined)
 			gem_comb_gn(p_gem1, p_gem2, p_gem_combined);
 			break;
 	}
-	if (p_gem_combined->damage < p_gem1->damage) p_gem_combined->damage = p_gem1->damage;
-	if (p_gem_combined->damage < p_gem2->damage) p_gem_combined->damage = p_gem2->damage;
+	p_gem_combined->damage = std::max(p_gem1->damage, p_gem_combined->damage);
+	p_gem_combined->damage = std::max(p_gem2->damage, p_gem_combined->damage);
 }
 
 template<class gemYB>
